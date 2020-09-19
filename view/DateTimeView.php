@@ -4,9 +4,6 @@ class DateTimeView {
 
 
 	public function show() {
-
-		$timeString = 'TODO, Write servertime here...';
-
-		return '<p>' . $timeString . '</p>';
+		return '<p>' . date('l') . ", the " . date('jS \of F Y') . ", The time is " . date('h:i:s') . '</p>';
 	}
 }
