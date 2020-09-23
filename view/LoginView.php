@@ -1,14 +1,13 @@
 <?php
-
 class LoginView {
 	private static $login = 'LoginView::Login';
 	private static $logout = 'LoginView::Logout';
 	private static $name = 'LoginView::UserName';
 	private static $password = 'LoginView::Password';
-	private static $cookieName = 'LoginView::CookieName';
-	private static $cookiePassword = 'LoginView::CookiePassword';
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
+	private static $cookieName = 'LoginView::CookieName';
+    private static $cookiePassword = 'LoginView::CookiePassword';
 
 	/**
 	 * Create HTTP response
@@ -19,60 +18,20 @@ class LoginView {
 	 */
 	public function response() {
 		$message = $_SESSION['message'];
-		if(isset($_POST[self::$name]) || isset($_POST[self::$password]))
+		$loginController = new LoginController;
+
+		$username = !empty($_POST[self::$name]) ? $_POST[self::$name] :'';
+		$password = !empty($_POST[self::$password]) ? $_POST[self::$password]: '';
+		$message = $loginController->attemptLogin($username, $password, isset($_POST[self::$login]), isset($_POST[self::$keep]));
+
+		if($loginController->checkIfLoggedIn())
 		{
-
-			if($_POST[self::$name] == '')
-			{
-				$message = 'Username is missing';
-			} else if($_POST[self::$password] == '')
-			{
-				$message = 'Password is missing';
-			}
-			else
-			{
-				$db = mysqli_connect('localhost', 'root', '', 'assignment2');
-				$username = $_POST[self::$name];
-				$password = $_POST[self::$password];
-				//TODO: real_escape_string
-				$password = md5($password);
-				$sql = "SELECT id FROM users WHERE username=? AND password=?";
-				$stmt = mysqli_stmt_init($db);
-				if(!mysqli_stmt_prepare($stmt, $sql))
-				{
-					$message = 'Failed';
-				}
-				else
-				{
-					mysqli_stmt_bind_param($stmt, "ss", $username, $password);
-					mysqli_stmt_execute($stmt);
-					mysqli_stmt_store_result($stmt);
-
-					if(mysqli_stmt_num_rows($stmt)>0)
-					{
-						$_SESSION['UserName'] = $_POST[self::$name];
-						$_SESSION['Password'] = $_POST[self::$password];
-						if(isset($_POST[self::$keep]))
-						{
-							$private_key = "!$//%$$//%$&=§$!&%&=§$!&%";
-							setcookie(self::$cookieName, $_SESSION['UserName'], time() + (86400 * 30), "/" );
-							setcookie(self::$cookiePassword, md5($_POST[self::$password].$private_key), time() + (86400 * 30), "/" );
-						}
-
-						$message = $_SESSION['message'];
-						return $this->generateLogoutButtonHTML($message);
-					}
-					else
-					{
-						$message = 'Wrong name or password';
-					}
-				}
-				mysqli_stmt_close($stmt);
-				mysqli_close($db);
-			}
+			return $this->generateLogoutButtonHTML($message);
 		}
-		$response = $this->generateLoginFormHTML($message);
-		return $response;
+		else
+		{
+			return $this->generateLoginFormHTML($message);
+		}
 	}
 
 	/**

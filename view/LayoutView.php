@@ -35,11 +35,13 @@ class LayoutView {
   }
 
   private function renderRegisterLink() {
+    $LoginController = new LoginController();
+    $isLoggedIn = $LoginController->checkIfLoggedIn();
     if (isset($_GET['register']))
     {
       return '<a href="?">Back to login</a>';
     }
-    else if(empty($_POST['LoginView::UserName']) && empty($_SESSION['UserName']) && empty($_POST['LoginView::Password']) && empty($_SESSION['Password'])) {
+    else if(!$isLoggedIn) {
       return '<a href="?register">Register a new user</a>';
     }
   }

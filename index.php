@@ -1,14 +1,14 @@
 <?php
  session_start();
-
  $_SESSION['message'] ="";
 //INCLUDE THE FILES NEEDED...
 require_once('view/LoginView.php');
 require_once('view/DateTimeView.php');
 require_once('view/LayoutView.php');
 require_once('view/RegisterView.php');
-
-
+require_once('controller/LoginController.php');
+require_once('controller/RegisterController.php');
+require_once('model/Database.php');
 
 if(isset($_COOKIE['LoginView::CookieName']) && isset($_COOKIE['LoginView::CookiePassword']))
 {
@@ -49,6 +49,7 @@ else if(isset($_POST['LoginView::Login']))
 
 
 
+
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
@@ -58,26 +59,14 @@ $v = new LoginView();
 $dtv = new DateTimeView();
 $lv = new LayoutView();
 $rv = new RegisterView();
+$loginController = new LoginController();
+$isloggedIn = $loginController->checkIfLoggedIn();
 
 if(isset($_GET['register']))
 {
-    if(isset($_SESSION['UserName']) && isset($_SESSION['Password']))
-    {
-        $lv->render(true, $rv, $dtv);
-    }
-    else
-    {
-        $lv->render(false, $rv, $dtv);
-    }
+    $lv->render($isloggedIn, $rv, $dtv);
 }
 else
 {
-    if(isset($_SESSION['UserName']) && isset($_SESSION['Password']))
-    {
-        $lv->render(true, $v, $dtv);
-    }
-    else
-    {
-        $lv->render(false, $v, $dtv);
-    }
+    $lv->render($isloggedIn, $v, $dtv);
 }
