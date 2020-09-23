@@ -39,7 +39,7 @@ class LayoutView {
     {
       return '<a href="?">Back to login</a>';
     }
-    else {
+    else if(empty($_POST['LoginView::UserName']) && empty($_SESSION['UserName']) && empty($_POST['LoginView::Password']) && empty($_SESSION['Password'])) {
       return '<a href="?register">Register a new user</a>';
     }
   }

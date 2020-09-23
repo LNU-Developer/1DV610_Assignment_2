@@ -82,7 +82,9 @@ class RegisterView {
 							mysqli_stmt_bind_param($stmt, "ss", $username, $password);
 							mysqli_stmt_execute($stmt);
 							mysqli_stmt_store_result($stmt);
-							$message = 'REGISTERED';
+							$_SESSION['message'] = "Registered new user.";
+							$_POST['LoginView::UserName'] = $username;
+							header('Location: index.php');
 
 						}
 					}

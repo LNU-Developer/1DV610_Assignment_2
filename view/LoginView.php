@@ -18,9 +18,10 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = '';
+		$message = $_SESSION['message'];
 		if(isset($_POST[self::$name]) || isset($_POST[self::$password]))
 		{
+
 			if($_POST[self::$name] == '')
 			{
 				$message = 'Username is missing';
@@ -49,7 +50,17 @@ class LoginView {
 
 					if(mysqli_stmt_num_rows($stmt)>0)
 					{
-						$message = 'SUCCESS';
+						$_SESSION['UserName'] = $_POST[self::$name];
+						$_SESSION['Password'] = $_POST[self::$password];
+						if(isset($_POST[self::$keep]))
+						{
+							$private_key = "!$//%$$//%$&=§$!&%&=§$!&%";
+							setcookie(self::$cookieName, $_SESSION['UserName'], time() + (86400 * 30), "/" );
+							setcookie(self::$cookiePassword, md5($_POST[self::$password].$private_key), time() + (86400 * 30), "/" );
+						}
+
+						$message = $_SESSION['message'];
+						return $this->generateLogoutButtonHTML($message);
 					}
 					else
 					{
@@ -60,7 +71,6 @@ class LoginView {
 				mysqli_close($db);
 			}
 		}
-
 		$response = $this->generateLoginFormHTML($message);
 		return $response;
 	}
