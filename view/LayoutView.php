@@ -3,7 +3,11 @@
 
 class LayoutView {
 
-  public function render($isLoggedIn, $v, DateTimeView $dtv) {
+  public function render($v, DateTimeView $dtv) {
+    $showResp = $v->response();
+    $LoginController = new LoginController();
+    $isLoggedIn = $LoginController->checkIfLoggedIn();
+
     echo '<!DOCTYPE html>
       <html>
         <head>
@@ -12,11 +16,11 @@ class LayoutView {
         </head>
         <body>
           <h1>Assignment 2</h1>
-          ' . $this->renderRegisterLink() . '
+          ' . $this->renderRegisterLink($isLoggedIn) . '
           ' . $this->renderIsLoggedIn($isLoggedIn) . '
 
           <div class="container">
-              ' . $v->response() . '
+              ' . $showResp . '
 
               ' . $dtv->show() . '
           </div>
@@ -34,9 +38,7 @@ class LayoutView {
     }
   }
 
-  private function renderRegisterLink() {
-    $LoginController = new LoginController();
-    $isLoggedIn = $LoginController->checkIfLoggedIn();
+  private function renderRegisterLink($isLoggedIn) {
     if (isset($_GET['register']))
     {
       return '<a href="?">Back to login</a>';
@@ -46,3 +48,4 @@ class LayoutView {
     }
   }
 }
+?>

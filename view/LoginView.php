@@ -17,14 +17,13 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = $_SESSION['message'];
 		$loginController = new LoginController;
 
 		$username = !empty($_POST[self::$name]) ? $_POST[self::$name] :'';
 		$password = !empty($_POST[self::$password]) ? $_POST[self::$password]: '';
-		$message = $loginController->attemptLogin($username, $password, isset($_POST[self::$login]), isset($_POST[self::$keep]));
+		$message = isset($_POST['LoginView::Logout']) ? $loginController->logout() : $loginController->attemptLogin($username, $password, isset($_POST[self::$login]), isset($_POST[self::$keep]));
 
-		if($loginController->checkIfLoggedIn())
+		if($loginController->checkIfLoggedIn() && !isset($_POST['LoginView::Logout']))
 		{
 			return $this->generateLogoutButtonHTML($message);
 		}
@@ -84,3 +83,4 @@ class LoginView {
 			return "";
 	}
 }
+?>

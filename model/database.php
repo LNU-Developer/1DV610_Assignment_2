@@ -63,6 +63,7 @@ class Database {
             {
                 $_SESSION['UserName'] = $username;
                 $_SESSION['Password'] = $password;
+                $_SESSION['isLoggedIn'] = true;
                 return 'Welcome';
             }
             else
@@ -79,3 +80,4 @@ class Database {
         $this->db = mysqli_connect('localhost', 'root', '', 'assignment2');
     }
 }
+?>
