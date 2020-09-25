@@ -65,11 +65,11 @@ class Database {
                 $_SESSION['Password'] = $password;
                 $_SESSION['isLoggedIn'] = true;
                 $_SESSION['browserInfo'] = $_SERVER['HTTP_USER_AGENT'];
-                return 'Welcome';
+                return true;
             }
             else
             {
-                return 'Wrong name or password';
+                return false;
             }
         }
         mysqli_stmt_close($stmt);

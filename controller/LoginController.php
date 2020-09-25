@@ -24,7 +24,16 @@ class LoginController
             if($this->checkUserInput($username, $password) === true && !empty($username) && !empty($password) && !isset($_SESSION['isLoggedIn']))
             {
                 $db = new Database();
-                $message = $db->loginUser($username, $password);
+                $loginSucceded = $db->loginUser($username, $password);
+
+                if($loginSucceded == true)
+                {
+                    $message = 'Welcome';
+                }
+                else
+                {
+                    $message = 'Wrong name or password';
+                }
 
                 if($this->checkIfLoggedIn() && $stayLoggedIn)
                 {
