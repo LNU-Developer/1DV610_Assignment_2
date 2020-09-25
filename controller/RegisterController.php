@@ -51,9 +51,9 @@ class RegisterController
         {
             return 'Passwords do not match.';
         }
-        //TODO: Needs to be changed in the final solution.
-        else if($username  == "<a>abc</a>")
+        else if(strip_tags($username) !== $username)
         {
+            $_SESSION['htmlStrippedUsername'] = strip_tags($username);
             return 'Username contains invalid characters.';
         }
         else

@@ -55,6 +55,11 @@ class RegisterView {
 
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
+		if(!empty($_SESSION['htmlStrippedUsername']))
+		{
+			$_POST[self::$name] = $_SESSION['htmlStrippedUsername'];
+			$_SESSION['htmlStrippedUsername'] = '';
+		}
 		if(isset($_POST[self::$name]))
 			{
 				return $_POST[self::$name];
