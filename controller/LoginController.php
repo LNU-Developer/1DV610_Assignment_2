@@ -40,6 +40,7 @@ class LoginController
                     $message = 'Welcome and you will be rembered';
 			        setcookie(self::$cookieName, $_SESSION['UserName'], time() + 3600);
                     setcookie(self::$cookiePassword,  $_SESSION['Password']=password_hash($password, PASSWORD_DEFAULT), time() + 3600);
+                    setcookie('LoginView::SessionID',  session_id(), time() + 3600);
                 }
                 return $message;
             }
@@ -56,10 +57,19 @@ class LoginController
         {
             if(isset($_COOKIE['LoginView::CookieName']) && isset($_COOKIE['LoginView::CookiePassword']) && !isset($_SESSION['isLoggedIn']))
             {
-                $_SESSION['isLoggedIn'] = true;
-                $_SESSION['UserName'] = $_COOKIE['LoginView::CookieName'];
-                $_SESSION['Password'] = $_COOKIE['LoginView::CookiePassword'];
-                return 'Welcome back with cookie';
+                if(isset($_COOKIE['LoginView::CookiePassword']) && $_COOKIE['LoginView::CookiePassword'] == session_id())
+                {
+                    $_SESSION['isLoggedIn'] = true;
+                    $_SESSION['UserName'] = $_COOKIE['LoginView::CookieName'];
+                    $_SESSION['Password'] = $_COOKIE['LoginView::CookiePassword'];
+                    return 'Welcome back with cookie';
+                }
+                else
+                {
+                    return 'Wrong information in cookies';
+                }
+
+
             }
         }
     }
