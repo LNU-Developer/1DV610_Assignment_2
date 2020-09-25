@@ -7,7 +7,7 @@ class LoginController
 
     public function checkIfLoggedIn()
     {
-        if(isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] == true &&  $_SESSION['browserInfo'] == $_SERVER['HTTP_USER_AGENT'])
+        if(isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] == true && isset($_SESSION['browserInfo']) && $_SESSION['browserInfo']  == $_SERVER['HTTP_USER_AGENT'])
         {
             return true;
         }
@@ -21,7 +21,7 @@ class LoginController
     {
         if($isLoginAttempt)
         {
-            if($this->checkUserInput($username, $password) === true && !empty($username) && !empty($password))
+            if($this->checkUserInput($username, $password) === true && !empty($username) && !empty($password) && !isset($_SESSION['isLoggedIn']))
             {
                 $db = new Database();
                 $message = $db->loginUser($username, $password);
@@ -34,6 +34,10 @@ class LoginController
                 }
                 return $message;
             }
+            else if(isset($_SESSION['isLoggedIn']))
+            {
+                return '';
+            }
             else
             {
                 return $this->checkUserInput($username, $password);
@@ -41,11 +45,12 @@ class LoginController
         }
         else
         {
-            if(isset($_COOKIE['LoginView::CookieName']) && isset($_COOKIE['LoginView::CookiePassword']))
+            if(isset($_COOKIE['LoginView::CookieName']) && isset($_COOKIE['LoginView::CookiePassword']) && !isset($_SESSION['isLoggedIn']))
             {
-                    $_SESSION['UserName'] = $_COOKIE['LoginView::CookieName'];
-                    $_SESSION['Password'] = $_COOKIE['LoginView::CookiePassword'];
-                    return 'Welcome back with cookie';
+                $_SESSION['isLoggedIn'] = true;
+                $_SESSION['UserName'] = $_COOKIE['LoginView::CookieName'];
+                $_SESSION['Password'] = $_COOKIE['LoginView::CookiePassword'];
+                return 'Welcome back with cookie';
             }
         }
     }
@@ -56,7 +61,7 @@ class LoginController
         {
             if (isset($_SESSION['UserName']))
             {
-
+                $_SESSION['isLoggedIn'] = false;
                 setcookie('LoginView::CookieName', "", time() - 3600);
                 setcookie('LoginView::CookiePassword', "", time() - 3600);
                 session_destroy();
