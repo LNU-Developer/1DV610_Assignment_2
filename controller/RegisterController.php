@@ -21,9 +21,6 @@ class RegisterController
                 {
                     return "User exists, pick another username.";
                 }
-
-
-
             }
             else
             {

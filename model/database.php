@@ -64,6 +64,7 @@ class Database {
                 $_SESSION['UserName'] = $username;
                 $_SESSION['Password'] = $password;
                 $_SESSION['isLoggedIn'] = true;
+                $_SESSION['browserInfo'] = $_SERVER['HTTP_USER_AGENT'];
                 return 'Welcome';
             }
             else

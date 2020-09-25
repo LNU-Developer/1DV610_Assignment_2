@@ -7,7 +7,7 @@ class LoginController
 
     public function checkIfLoggedIn()
     {
-        if(isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] == true)
+        if(isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] == true &&  $_SESSION['browserInfo'] == $_SERVER['HTTP_USER_AGENT'])
         {
             return true;
         }
