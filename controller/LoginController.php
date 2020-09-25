@@ -29,9 +29,8 @@ class LoginController
                 if($this->checkIfLoggedIn() && $stayLoggedIn)
                 {
                     $message = 'Welcome and you will be rembered';
-                    $private_key = "!$//%$$//%$&=§$!&%&=§$!&%";
 			        setcookie(self::$cookieName, $_SESSION['UserName'], time() + 3600);
-			        setcookie(self::$cookiePassword,  $_SESSION['Password']=md5($password.$private_key), time() + 3600);
+                    setcookie(self::$cookiePassword,  $_SESSION['Password']=password_hash($password, PASSWORD_DEFAULT), time() + 3600);
                 }
                 return $message;
             }
