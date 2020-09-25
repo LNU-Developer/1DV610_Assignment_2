@@ -53,6 +53,11 @@ class LoginView {
 	* @return  void, BUT writes to standard output!
 	*/
 	private function generateLoginFormHTML($message) {
+		if(!empty($_SESSION['message']))
+		{
+			$message = $_SESSION['message'];
+			$_SESSION['message'] = '';
+		}
 		return '
 			<form method="post" >
 				<fieldset>
@@ -76,6 +81,11 @@ class LoginView {
 
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
+		if(!empty($_SESSION['registeredUsername']))
+		{
+			$_POST[self::$name] = $_SESSION['registeredUsername'];
+			$_SESSION['registeredUsername'] = '';
+		}
 		if(isset($_POST[self::$name]))
 			{
 				return $_POST[self::$name];

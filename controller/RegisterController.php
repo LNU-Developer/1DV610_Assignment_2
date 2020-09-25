@@ -10,8 +10,20 @@ class RegisterController
             if($this->checkUserInput($username, $password,  $passwordRepeat) === true && !empty($username) && !empty($password) && !empty($passwordRepeat))
             {
                 $db = new Database();
-                $message = $db->registerUser($username, $password);
-                return $message;
+                $registerSucceded = $db->registerUser($username, $password);
+                if($registerSucceded == true)
+                {
+                    $_SESSION['message'] = "Registered new user.";
+                    $_SESSION['registeredUsername'] = $username;
+                    header("Location:/");
+                }
+                else
+                {
+                    return "User exists, pick another username.";
+                }
+
+
+
             }
             else
             {

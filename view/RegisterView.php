@@ -22,8 +22,7 @@ class RegisterView {
 
 		$RegisterController = new RegisterController();
 		$message = $RegisterController->attemptRegister($username, $password, $passwordRepeat, isset($_POST[self::$doRegistration]));
-		$response = $this->generateRegisterFormHTML($message);
-		return $response;
+		return $this->generateRegisterFormHTML($message);
 	}
 
 	/**

@@ -30,8 +30,8 @@ class LoginController
                 {
                     $message = 'Welcome and you will be rembered';
                     $private_key = "!$//%$$//%$&=§$!&%&=§$!&%";
-			        setcookie(self::$cookieName, $_SESSION['UserName'], time() + (86400 * 30), "/" );
-			        setcookie(self::$cookiePassword, md5($password.$private_key), time() + (86400 * 30), "/" );
+			        setcookie(self::$cookieName, $_SESSION['UserName'], time() + 3600);
+			        setcookie(self::$cookiePassword,  $_SESSION['Password']=md5($password.$private_key), time() + 3600);
                 }
                 return $message;
             }
@@ -44,12 +44,9 @@ class LoginController
         {
             if(isset($_COOKIE['LoginView::CookieName']) && isset($_COOKIE['LoginView::CookiePassword']))
             {
-                if($_COOKIE['LoginView::CookieName'] && $_COOKIE['LoginView::CookiePassword'])
-                {
                     $_SESSION['UserName'] = $_COOKIE['LoginView::CookieName'];
                     $_SESSION['Password'] = $_COOKIE['LoginView::CookiePassword'];
                     return 'Welcome back with cookie';
-                }
             }
         }
     }

@@ -18,7 +18,7 @@ class Database {
 
 			if(mysqli_stmt_num_rows($stmt)>0)
 			{
-                return "User exists, pick another username.";
+                return false;
 			}
 			else
 			{
@@ -26,7 +26,7 @@ class Database {
 				$stmt = mysqli_stmt_init($this->db);
 				if(!mysqli_stmt_prepare($stmt, $sql))
 				{
-					$message = 'Failed';
+					echo 'Failed';
 				}
 				else
 				{
@@ -34,7 +34,7 @@ class Database {
 					mysqli_stmt_bind_param($stmt, "ss", $username, $password);
 					mysqli_stmt_execute($stmt);
 					mysqli_stmt_store_result($stmt);
-                    return "Registered new user.";
+                    return true;
                 }
             }
                 mysqli_stmt_close($stmt);
