@@ -24,10 +24,14 @@ class LoginController
             if($this->checkUserInput($username, $password) === true && !empty($username) && !empty($password) && !isset($_SESSION['isLoggedIn']))
             {
                 $db = new Database();
-                $loginSucceded = $db->loginUser($username, $password);
+                $loginSucceded = $db->findUser($username, $password);
 
                 if($loginSucceded == true)
                 {
+                    $_SESSION['UserName'] = $username;
+                    $_SESSION['Password'] = $password;
+                    $_SESSION['isLoggedIn'] = true;
+                    $_SESSION['browserInfo'] = $_SERVER['HTTP_USER_AGENT'];
                     $message = 'Welcome';
                 }
                 else
@@ -40,7 +44,7 @@ class LoginController
                     $message = 'Welcome and you will be rembered';
 			        setcookie(self::$cookieName, $_SESSION['UserName'], time() + 3600);
                     setcookie(self::$cookiePassword,  $_SESSION['Password']=password_hash($password, PASSWORD_DEFAULT), time() + 3600);
-                    setcookie('LoginView::SessionID',  session_id(), time() + 3600);
+                    $succededDbOperation = $db->addCookie($username, $password);
                 }
                 return $message;
             }
@@ -57,19 +61,21 @@ class LoginController
         {
             if(isset($_COOKIE['LoginView::CookieName']) && isset($_COOKIE['LoginView::CookiePassword']) && !isset($_SESSION['isLoggedIn']))
             {
-                if(isset($_COOKIE['LoginView::CookiePassword']) && $_COOKIE['LoginView::CookiePassword'] == session_id())
+                if(isset($_COOKIE['LoginView::CookiePassword']) && $_COOKIE['LoginView::CookiePassword'])
                 {
                     $_SESSION['isLoggedIn'] = true;
                     $_SESSION['UserName'] = $_COOKIE['LoginView::CookieName'];
                     $_SESSION['Password'] = $_COOKIE['LoginView::CookiePassword'];
                     return 'Welcome back with cookie';
                 }
+                else if(isset($_SESSION['isLoggedIn']))
+                {
+                    return '';
+                }
                 else
                 {
                     return 'Wrong information in cookies';
                 }
-
-
             }
         }
     }
@@ -78,13 +84,11 @@ class LoginController
     {
         if(isset($_POST['LoginView::Logout']))
         {
-            if (isset($_SESSION['UserName']))
+            if (isset($_SESSION['UserName']) && isset($_SESSION['isLoggedIn']))
             {
-                $_SESSION['isLoggedIn'] = false;
+                unset($_SESSION['isLoggedIn']);
                 setcookie('LoginView::CookieName', "", time() - 3600);
                 setcookie('LoginView::CookiePassword', "", time() - 3600);
-                session_destroy();
-                session_start();
                 return 'Bye bye!';
             }
         }
