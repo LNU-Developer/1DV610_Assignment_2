@@ -19,11 +19,12 @@ class LoginController
 
     public function attemptLogin($username, $password, $isLoginAttempt, $stayLoggedIn)
     {
+        $db = new Database();
         if($isLoginAttempt)
         {
             if($this->checkUserInput($username, $password) === true && !empty($username) && !empty($password) && !isset($_SESSION['isLoggedIn']))
             {
-                $db = new Database();
+
                 $loginSucceded = $db->findUser($username, $password);
 
                 if($loginSucceded == true)
@@ -43,8 +44,9 @@ class LoginController
                 {
                     $message = 'Welcome and you will be rembered';
 			        setcookie(self::$cookieName, $_SESSION['UserName'], time() + 3600);
-                    setcookie(self::$cookiePassword,  $_SESSION['Password']=password_hash($password, PASSWORD_DEFAULT), time() + 3600);
-                    $succededDbOperation = $db->addCookie($username, $password);
+                    $passwordCookie = password_hash($password, PASSWORD_DEFAULT);
+                    setcookie(self::$cookiePassword,  $passwordCookie, time() + 3600);
+                    $db->addCookie($username, $passwordCookie);
                 }
                 return $message;
             }
@@ -59,9 +61,11 @@ class LoginController
         }
         else
         {
+            //TODO: Currently not working. cookiePassword is not being received correctly.
             if(isset($_COOKIE['LoginView::CookieName']) && isset($_COOKIE['LoginView::CookiePassword']) && !isset($_SESSION['isLoggedIn']))
             {
-                if(isset($_COOKIE['LoginView::CookiePassword']) && $_COOKIE['LoginView::CookiePassword'])
+                $cookiePassword = $db->fetchCookie($username);
+                if(isset($_COOKIE['LoginView::CookiePassword']) && $_COOKIE['LoginView::CookiePassword'] == $cookiePassword)
                 {
                     $_SESSION['isLoggedIn'] = true;
                     $_SESSION['UserName'] = $_COOKIE['LoginView::CookieName'];
